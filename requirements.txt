@@ -1,18 +1,38 @@
+# ─── AI & Voice ───
 faster-whisper
 TTS
-pyaudio
-sounddevice
-soundfile
-numpy
 torch
 torchaudio
-librosa
+numpy
 scipy
+librosa
+noisereduce
+sounddevice
+soundfile
+pyaudio
+
+# ─── Memory & Data ───
 chromadb
 sqlite-utils
+
+# ─── Web & Scraping ───
 requests
 beautifulsoup4
 playwright
+
+# ─── Mac Control ───
 pyautogui
 pyobjc
-noisereduce
+pyobjc-framework-Quartz
+
+# ─── Security & Network ───
+scapy
+python-nmap
+paramiko
+cryptography
+pycryptodome
+passlib
+pyjwt
+pyOpenSSL
+dnspython
+impacket

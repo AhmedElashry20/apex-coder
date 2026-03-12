@@ -151,6 +151,157 @@ class SearchEngine {
 
         return detailed;
     }
+
+    async searchGitHub(query, maxResults = 10) {
+        return new Promise((resolve) => {
+            const encodedQuery = encodeURIComponent(query);
+            const url = `https://api.github.com/search/repositories?q=${encodedQuery}&sort=stars&per_page=${maxResults}`;
+
+            const req = https.get(url, {
+                headers: {
+                    'User-Agent': 'APEX-AI-Agent',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                timeout: 15000
+            }, (res) => {
+                let data = '';
+                res.on('data', (chunk) => { data += chunk; });
+                res.on('end', () => {
+                    try {
+                        const parsed = JSON.parse(data);
+                        const repos = (parsed.items || []).map(r => ({
+                            name: r.full_name,
+                            description: r.description || '',
+                            url: r.html_url,
+                            stars: r.stargazers_count,
+                            language: r.language,
+                            updated: r.updated_at
+                        }));
+                        resolve(repos);
+                    } catch (e) { resolve([]); }
+                });
+            });
+            req.on('error', () => resolve([]));
+            req.on('timeout', () => { req.destroy(); resolve([]); });
+        });
+    }
+
+    async searchGitHubCode(query, language = '', maxResults = 10) {
+        return new Promise((resolve) => {
+            let q = encodeURIComponent(query);
+            if (language) q += `+language:${encodeURIComponent(language)}`;
+            const url = `https://api.github.com/search/code?q=${q}&per_page=${maxResults}`;
+
+            const req = https.get(url, {
+                headers: {
+                    'User-Agent': 'APEX-AI-Agent',
+                    'Accept': 'application/vnd.github.v3+json'
+                },
+                timeout: 15000
+            }, (res) => {
+                let data = '';
+                res.on('data', (chunk) => { data += chunk; });
+                res.on('end', () => {
+                    try {
+                        const parsed = JSON.parse(data);
+                        const results = (parsed.items || []).map(item => ({
+                            name: item.name,
+                            path: item.path,
+                            repo: item.repository ? item.repository.full_name : '',
+                            url: item.html_url
+                        }));
+                        resolve(results);
+                    } catch (e) { resolve([]); }
+                });
+            });
+            req.on('error', () => resolve([]));
+            req.on('timeout', () => { req.destroy(); resolve([]); });
+        });
+    }
+
+    async searchStackOverflow(query, maxResults = 5) {
+        return new Promise((resolve) => {
+            const encodedQuery = encodeURIComponent(query);
+            const url = `https://api.stackexchange.com/2.3/search/advanced?order=desc&sort=relevance&q=${encodedQuery}&site=stackoverflow&pagesize=${maxResults}&filter=withbody`;
+
+            const req = https.get(url, {
+                headers: { 'Accept-Encoding': 'identity', 'User-Agent': 'APEX-AI-Agent' },
+                timeout: 15000
+            }, (res) => {
+                let chunks = [];
+                res.on('data', (chunk) => { chunks.push(chunk); });
+                res.on('end', () => {
+                    try {
+                        const buffer = Buffer.concat(chunks);
+                        // StackExchange API returns gzipped by default
+                        let text;
+                        try {
+                            const zlib = require('zlib');
+                            text = zlib.gunzipSync(buffer).toString('utf-8');
+                        } catch (e) {
+                            text = buffer.toString('utf-8');
+                        }
+                        const parsed = JSON.parse(text);
+                        const questions = (parsed.items || []).map(q => ({
+                            title: q.title,
+                            url: q.link,
+                            score: q.score,
+                            answered: q.is_answered,
+                            answers: q.answer_count,
+                            tags: q.tags || []
+                        }));
+                        resolve(questions);
+                    } catch (e) { resolve([]); }
+                });
+            });
+            req.on('error', () => resolve([]));
+            req.on('timeout', () => { req.destroy(); resolve([]); });
+        });
+    }
+
+    async readURL(url) {
+        return this.fetchPage(url);
+    }
+
+    async getLatestDocs(technology) {
+        const docsSites = {
+            'react': 'https://react.dev',
+            'next.js': 'https://nextjs.org/docs',
+            'nextjs': 'https://nextjs.org/docs',
+            'vue': 'https://vuejs.org/guide',
+            'angular': 'https://angular.dev',
+            'svelte': 'https://svelte.dev/docs',
+            'node': 'https://nodejs.org/docs/latest/api/',
+            'python': 'https://docs.python.org/3/',
+            'django': 'https://docs.djangoproject.com/',
+            'fastapi': 'https://fastapi.tiangolo.com/',
+            'flask': 'https://flask.palletsprojects.com/',
+            'rust': 'https://doc.rust-lang.org/book/',
+            'go': 'https://go.dev/doc/',
+            'swift': 'https://docs.swift.org/swift-book/',
+            'kotlin': 'https://kotlinlang.org/docs/',
+            'typescript': 'https://www.typescriptlang.org/docs/',
+            'electron': 'https://www.electronjs.org/docs/latest/',
+            'tailwind': 'https://tailwindcss.com/docs/',
+            'pytorch': 'https://pytorch.org/docs/stable/',
+            'tensorflow': 'https://www.tensorflow.org/api_docs',
+            'docker': 'https://docs.docker.com/',
+            'kubernetes': 'https://kubernetes.io/docs/',
+        };
+
+        const tech = technology.toLowerCase();
+        const docsUrl = docsSites[tech];
+
+        if (docsUrl) {
+            try {
+                return await this.fetchPage(docsUrl);
+            } catch (e) {
+                return await this.searchAndSummarize(`${technology} documentation latest`);
+            }
+        }
+
+        return await this.searchAndSummarize(`${technology} official documentation`);
+    }
 }
 
 module.exports = SearchEngine;

@@ -1,0 +1,756 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX Installer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(0, 212, 255, 0.3);
+            border-radius: 2px;
+        }
+
+        body {
+            font-family: 'Cairo', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #0a0a0f;
+            color: #e0e0e0;
+            height: 100vh;
+            overflow: hidden;
+            -webkit-app-region: drag;
+            user-select: none;
+        }
+
+        button, .log-area, .no-drag {
+            -webkit-app-region: no-drag;
+        }
+
+        .screen {
+            display: none;
+            height: 100vh;
+            flex-direction: column;
+            padding: 20px 30px;
+            position: relative;
+        }
+
+        .screen.active {
+            display: flex;
+        }
+
+        /* ===== WELCOME SCREEN ===== */
+
+        .welcome-header {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .apex-logo {
+            font-size: 52px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #0088ff, #00d4ff, #00ffcc);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: gradientShift 4s ease infinite;
+            letter-spacing: 8px;
+            margin-bottom: 4px;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #b0b0b0;
+            margin-bottom: 20px;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 0 20px 16px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(0, 212, 255, 0.04);
+            border: 1px solid rgba(0, 212, 255, 0.1);
+            border-radius: 10px;
+            padding: 10px 14px;
+            transition: all 0.3s ease;
+        }
+
+        .feature-item:hover {
+            background: rgba(0, 212, 255, 0.08);
+            border-color: rgba(0, 212, 255, 0.25);
+        }
+
+        .feature-icon {
+            font-size: 22px;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 212, 255, 0.1);
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .feature-text {
+            font-size: 13px;
+            font-weight: 600;
+            color: #c8c8c8;
+            line-height: 1.4;
+        }
+
+        .install-info {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 16px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: #808080;
+        }
+
+        .info-item span.info-icon {
+            font-size: 14px;
+        }
+
+        .info-item strong {
+            color: #a0a0a0;
+            font-weight: 600;
+        }
+
+        .install-btn {
+            display: block;
+            width: 280px;
+            margin: 0 auto 10px;
+            padding: 14px 0;
+            background: linear-gradient(135deg, #0088ff, #00d4ff);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .install-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.15), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .install-btn:hover::before {
+            left: 100%;
+        }
+
+        .install-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(0, 136, 255, 0.35);
+        }
+
+        .install-btn:active {
+            transform: translateY(0);
+        }
+
+        .internet-note {
+            text-align: center;
+            font-size: 11px;
+            color: #555;
+        }
+
+        /* ===== INSTALLING SCREEN ===== */
+
+        .installing-header {
+            text-align: center;
+            margin-top: 20px;
+            margin-bottom: 12px;
+        }
+
+        .installing-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .progress-container {
+            margin: 0 10px 12px;
+        }
+
+        .progress-bar-bg {
+            height: 6px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #0088ff, #00d4ff, #00ffcc);
+            background-size: 200% 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+            animation: progressGlow 2s linear infinite;
+        }
+
+        @keyframes progressGlow {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 200% 0%; }
+        }
+
+        .progress-info {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 6px;
+            font-size: 11px;
+            color: #666;
+        }
+
+        .current-step-name {
+            text-align: center;
+            font-size: 15px;
+            font-weight: 600;
+            color: #e0e0e0;
+            margin-bottom: 10px;
+            min-height: 24px;
+        }
+
+        .steps-list {
+            flex: 1;
+            overflow-y: auto;
+            margin: 0 10px;
+            padding: 8px 0;
+            max-height: 220px;
+        }
+
+        .step-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 12px;
+            font-size: 12px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            direction: rtl;
+        }
+
+        .step-item.current {
+            background: rgba(0, 212, 255, 0.06);
+        }
+
+        .step-status {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            flex-shrink: 0;
+        }
+
+        .step-status.pending {
+            color: #333;
+        }
+
+        .step-status.running {
+            color: #00d4ff;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .step-status.done {
+            color: #00e676;
+        }
+
+        .step-status.error {
+            color: #ff5252;
+        }
+
+        .step-status.skipped {
+            color: #ff9800;
+        }
+
+        .step-name {
+            color: #888;
+            flex: 1;
+        }
+
+        .step-item.current .step-name {
+            color: #e0e0e0;
+            font-weight: 600;
+        }
+
+        .step-item.completed .step-name {
+            color: #666;
+        }
+
+        .log-toggle {
+            text-align: center;
+            margin: 6px 0 4px;
+        }
+
+        .log-toggle button {
+            background: none;
+            border: 1px solid rgba(255,255,255,0.08);
+            color: #555;
+            font-family: 'Cairo', sans-serif;
+            font-size: 11px;
+            padding: 3px 14px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .log-toggle button:hover {
+            border-color: rgba(0, 212, 255, 0.3);
+            color: #888;
+        }
+
+        .log-area {
+            direction: ltr;
+            text-align: left;
+            font-family: 'SF Mono', 'Menlo', 'Monaco', monospace;
+            font-size: 10px;
+            color: #444;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255,255,255,0.04);
+            border-radius: 6px;
+            padding: 8px 10px;
+            margin: 0 10px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+            line-height: 1.5;
+        }
+
+        .log-area.open {
+            max-height: 100px;
+            overflow-y: auto;
+            padding: 8px 10px;
+        }
+
+        .install-warning {
+            text-align: center;
+            font-size: 11px;
+            color: #ff9800;
+            margin-top: 6px;
+            padding-bottom: 4px;
+        }
+
+        /* ===== SUCCESS SCREEN ===== */
+
+        .success-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            text-align: center;
+        }
+
+        .checkmark-circle {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            background: rgba(0, 230, 118, 0.1);
+            border: 3px solid #00e676;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            animation: scaleIn 0.5s ease-out, pulseGreen 2s ease infinite;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        @keyframes pulseGreen {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(0, 230, 118, 0.2); }
+            50% { box-shadow: 0 0 0 15px rgba(0, 230, 118, 0); }
+        }
+
+        .checkmark-icon {
+            font-size: 42px;
+            color: #00e676;
+        }
+
+        .success-title {
+            font-size: 24px;
+            font-weight: 800;
+            color: #00e676;
+            margin-bottom: 20px;
+        }
+
+        .success-instructions {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .success-instructions li {
+            font-size: 14px;
+            color: #999;
+            padding: 5px 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: center;
+        }
+
+        .success-instructions li .inst-icon {
+            font-size: 16px;
+            color: #00d4ff;
+        }
+
+        .open-btn {
+            display: block;
+            width: 260px;
+            padding: 14px 0;
+            background: linear-gradient(135deg, #00c853, #00e676);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Cairo', sans-serif;
+            font-size: 17px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
+        }
+
+        .open-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 30px rgba(0, 200, 83, 0.35);
+        }
+
+        .open-btn:active {
+            transform: translateY(0);
+        }
+
+        /* Background decoration */
+        .bg-glow {
+            position: fixed;
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.08;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .bg-glow-1 {
+            top: -100px;
+            right: -80px;
+            background: #00d4ff;
+        }
+
+        .bg-glow-2 {
+            bottom: -100px;
+            left: -80px;
+            background: #0088ff;
+        }
+
+        /* Window controls area */
+        .titlebar-spacer {
+            height: 32px;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="bg-glow bg-glow-1"></div>
+    <div class="bg-glow bg-glow-2"></div>
+
+    <!-- ===== SCREEN 1: WELCOME ===== -->
+    <div id="screen-welcome" class="screen active">
+        <div class="titlebar-spacer"></div>
+        <div class="welcome-header">
+            <div class="apex-logo">APEX</div>
+            <div class="welcome-title">مرحباً بك في APEX</div>
+        </div>
+
+        <div class="features-grid">
+            <div class="feature-item">
+                <div class="feature-icon">🧠</div>
+                <div class="feature-text">AI برمجي محلي بالكامل</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🎙️</div>
+                <div class="feature-text">استنساخ صوتك للاجتماعات</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">🛡️</div>
+                <div class="feature-text">أمن سيبراني متقدم</div>
+            </div>
+            <div class="feature-item">
+                <div class="feature-icon">💻</div>
+                <div class="feature-text">تحكم كامل بالماك</div>
+            </div>
+        </div>
+
+        <div class="install-info">
+            <div class="info-item">
+                <span class="info-icon">💾</span>
+                <span>المساحة المطلوبة: <strong>~30GB</strong></span>
+            </div>
+            <div class="info-item">
+                <span class="info-icon">⏱️</span>
+                <span>الوقت التقديري: <strong>30-45 دقيقة</strong></span>
+            </div>
+        </div>
+
+        <button class="install-btn" onclick="startInstallation()">ابدأ التثبيت</button>
+
+        <div class="internet-note">يتطلب اتصالاً بالإنترنت لتحميل النماذج والحزم</div>
+    </div>
+
+    <!-- ===== SCREEN 2: INSTALLING ===== -->
+    <div id="screen-installing" class="screen">
+        <div class="titlebar-spacer"></div>
+        <div class="installing-header">
+            <div class="installing-title">جاري تثبيت APEX...</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar-bg">
+                <div class="progress-bar-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-info">
+                <span id="progress-percent">0%</span>
+                <span id="progress-step">0 / 17</span>
+            </div>
+        </div>
+
+        <div class="current-step-name" id="current-step-name">جاري التحضير...</div>
+
+        <div class="steps-list" id="steps-list">
+            <!-- Steps will be populated by JS -->
+        </div>
+
+        <div class="log-toggle">
+            <button onclick="toggleLog()">عرض السجل التفصيلي</button>
+        </div>
+
+        <div class="log-area" id="log-area"></div>
+
+        <div class="install-warning">⚠️ جاري التثبيت... لا تغلق النافذة</div>
+    </div>
+
+    <!-- ===== SCREEN 3: SUCCESS ===== -->
+    <div id="screen-success" class="screen">
+        <div class="titlebar-spacer"></div>
+        <div class="success-content">
+            <div class="checkmark-circle">
+                <span class="checkmark-icon">✓</span>
+            </div>
+
+            <div class="success-title">تم تثبيت APEX بنجاح!</div>
+
+            <ul class="success-instructions">
+                <li>
+                    <span class="inst-icon">📂</span>
+                    <span>APEX موجود في Applications</span>
+                </li>
+                <li>
+                    <span class="inst-icon">🔷</span>
+                    <span>أيقونة في شريط القوائم</span>
+                </li>
+                <li>
+                    <span class="inst-icon">👆</span>
+                    <span>اضغط على الأيقونة للبدء</span>
+                </li>
+            </ul>
+
+            <button class="open-btn" onclick="openApex()">افتح APEX الآن</button>
+        </div>
+    </div>
+
+    <script>
+        const STEP_NAMES = [
+            'تثبيت Homebrew',
+            'تثبيت Python 3.11',
+            'تثبيت Node.js',
+            'تثبيت Ollama',
+            'تثبيت BlackHole 2ch',
+            'تثبيت PortAudio',
+            'تشغيل خادم Ollama',
+            'تحميل نموذج qwen2.5-coder:14b',
+            'تحميل نموذج qwen2.5-coder:7b',
+            'تحميل نموذج qwen2.5:14b',
+            'تحميل نموذج nomic-embed-text',
+            'تثبيت حزم Python',
+            'تثبيت حزم npm',
+            'تحميل نموذج Whisper',
+            'بناء تطبيق APEX',
+            'نسخ إلى Applications',
+            'إنهاء التثبيت'
+        ];
+
+        const STEP_SIZES = [
+            '~50MB', '~100MB', '~50MB', '~200MB', '~5MB', '~2MB',
+            '', '~9GB', '~4.7GB', '~9GB', '~274MB',
+            '~2GB', '~200MB', '~1.5GB', '', '', ''
+        ];
+
+        let logOpen = false;
+
+        function initStepsList() {
+            const list = document.getElementById('steps-list');
+            list.innerHTML = '';
+            STEP_NAMES.forEach((name, i) => {
+                const item = document.createElement('div');
+                item.className = 'step-item';
+                item.id = `step-${i}`;
+                item.innerHTML = `
+                    <span class="step-status pending" id="step-status-${i}">○</span>
+                    <span class="step-name">${name}</span>
+                    ${STEP_SIZES[i] ? `<span style="font-size:10px;color:#444;margin-right:auto;direction:ltr">${STEP_SIZES[i]}</span>` : ''}
+                `;
+                list.appendChild(item);
+            });
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function startInstallation() {
+            showScreen('screen-installing');
+            initStepsList();
+
+            window.installer.onProgress((data) => {
+                const { step, total, name, status, percent } = data;
+
+                // Update progress bar
+                document.getElementById('progress-fill').style.width = percent + '%';
+                document.getElementById('progress-percent').textContent = percent + '%';
+                document.getElementById('progress-step').textContent = step + ' / ' + total;
+                document.getElementById('current-step-name').textContent = name;
+
+                const stepIndex = step - 1;
+
+                // Update all step statuses
+                for (let i = 0; i < STEP_NAMES.length; i++) {
+                    const statusEl = document.getElementById(`step-status-${i}`);
+                    const itemEl = document.getElementById(`step-${i}`);
+                    if (!statusEl || !itemEl) continue;
+
+                    if (i < stepIndex) {
+                        // Already processed steps - check their current state
+                        // (they might be done, error, or skipped - don't override)
+                        if (statusEl.classList.contains('pending') || statusEl.classList.contains('running')) {
+                            statusEl.className = 'step-status done';
+                            statusEl.textContent = '✓';
+                            itemEl.className = 'step-item completed';
+                        }
+                    }
+                }
+
+                // Update current step
+                const currentStatusEl = document.getElementById(`step-status-${stepIndex}`);
+                const currentItemEl = document.getElementById(`step-${stepIndex}`);
+
+                if (currentStatusEl && currentItemEl) {
+                    if (status === 'running') {
+                        currentStatusEl.className = 'step-status running';
+                        currentStatusEl.textContent = '⟳';
+                        currentItemEl.className = 'step-item current';
+                        // Scroll into view
+                        currentItemEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                    } else if (status === 'done') {
+                        currentStatusEl.className = 'step-status done';
+                        currentStatusEl.textContent = '✓';
+                        currentItemEl.className = 'step-item completed';
+                    } else if (status === 'error') {
+                        currentStatusEl.className = 'step-status error';
+                        currentStatusEl.textContent = '✗';
+                        currentItemEl.className = 'step-item completed';
+                    } else if (status === 'skipped') {
+                        currentStatusEl.className = 'step-status skipped';
+                        currentStatusEl.textContent = '–';
+                        currentItemEl.className = 'step-item completed';
+                    } else if (status === 'complete') {
+                        // All done
+                        showScreen('screen-success');
+                    }
+                }
+            });
+
+            window.installer.onLog((msg) => {
+                const logArea = document.getElementById('log-area');
+                logArea.textContent += msg;
+                logArea.scrollTop = logArea.scrollHeight;
+            });
+
+            window.installer.startInstall().then(() => {
+                // Installation finished
+            }).catch((err) => {
+                console.error('Installation failed:', err);
+            });
+        }
+
+        function toggleLog() {
+            logOpen = !logOpen;
+            const logArea = document.getElementById('log-area');
+            if (logOpen) {
+                logArea.classList.add('open');
+            } else {
+                logArea.classList.remove('open');
+            }
+        }
+
+        function openApex() {
+            window.installer.openApex().then(() => {
+                // Optionally close installer after a delay
+                setTimeout(() => {
+                    window.close();
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>

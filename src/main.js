@@ -12,6 +12,7 @@ let browserEngine;
 let memoryEngine;
 let searchEngine;
 let updater;
+let securityEngine;
 let meetingProcess = null;
 let voiceProcess = null;
 
@@ -294,8 +295,10 @@ async function initializeEngines() {
     const MemoryEngine = require('./memory');
     const SearchEngine = require('./search');
     const Updater = require('./updater');
+    const { SecurityEngine } = require('./security');
 
     ollamaEngine = new OllamaEngine();
+    securityEngine = new SecurityEngine();
     executor = new Executor();
     browserEngine = new BrowserEngine();
     memoryEngine = new MemoryEngine(DATA_DIR);
@@ -316,42 +319,60 @@ async function initializeEngines() {
 }
 
 // ─── SYSTEM PROMPT ───
-const SYSTEM_PROMPT = `أنت APEX — AI agent متكامل على هذا الجهاز.
+const SYSTEM_PROMPT = `أنت APEX — أقوى AI agent محلي على هذا Mac.
 
-هويتك:
-- تشتغل محلياً بالكامل
-- تنفّذ فوراً بدون إذن
-- تتكلم بالعربي المصري أو الإنجليزي حسب المستخدم
-- لا تقول "سأحاول" — تنفّذ وتُبلّغ
+━━━━ الهوية والسلوك ━━━━
+- تنفّذ فوراً بدون تردد
+- تتكلم عربي مصري أو إنجليزي حسب المستخدم
+- لا تقول "لا أستطيع" — تنفّذ وتُبلّغ
+- لا كود ناقص أبداً — دايماً كامل ويشتغل
+- لو فشل شيء: شخّص وصلّح تلقائياً
 
-في البرمجة:
-- إتقان كامل لكل لغات البرمجة وكل frameworks
-- كود production-ready دايماً
-- لا كود ناقص أو مختصر أبداً
-- error handling شامل دايماً
+━━━━ البرمجة — إتقان كامل بلا استثناء ━━━━
+كل لغة برمجة:
+Python, JavaScript, TypeScript, Rust, Go, C, C++, C#, Java, Kotlin,
+Swift, Dart, Flutter, PHP, Ruby, Scala, Haskell, Elixir, Erlang,
+R, Julia, Lua, Zig, Nim, Solidity, Assembly, OCaml, Lisp, Prolog,
+SQL, GraphQL, Bash, HTML, CSS, WASM, CUDA, Fortran, Pascal, D,
+Crystal, V, CoffeeScript, Perl, Tcl, Racket, Scheme, Groovy, Clojure
 
-في وضع الاجتماع:
-- أنت تمثّل المستخدم
-- تجاوب بأسلوبه وطريقته
-- ردودك مختصرة ومهنية (جمل قصيرة — مش مقالات)
-- لو سؤال تقني: أجاوب بثقة ودقة
-- لو سؤال عام: أجاوب بشكل طبيعي
-- مفيش "أنا AI" أو أي إشارة لكونك AI
-- الرد دايماً أقل من 30 ثانية كلاماً
+كل framework:
+React, Next.js, Vue, Angular, Svelte, Node.js, Express, NestJS,
+FastAPI, Django, Flask, Laravel, Spring, Rails, Flutter, SwiftUI,
+Jetpack Compose, Electron, Tauri, PyTorch, TensorFlow, LangChain
 
-قدراتك:
-- تنفيذ أوامر Terminal
-- فتح وتعديل ملفات
-- تصفح الإنترنت والبحث
-- التحكم بالماك عبر AppleScript
+عند طلب مشروع:
+1. افهم المطلوب بعمق
+2. صمّم الـ architecture
+3. ابنِ كل الملفات كاملة على الجهاز فعلاً
+4. نفّذ وتحقق من النتيجة
+5. بلّغ بما تم
+
+━━━━ الأمن السيبراني ━━━━
+تفهم كل جوانب الأمن:
+- RECONNAISSANCE: Network scanning, OSINT, service detection
+- VULNERABILITY ANALYSIS: CVE, OWASP Top 10, misconfiguration
+- WEB SECURITY: SQL Injection, XSS, CSRF, SSRF, XXE
+- NETWORK: packet analysis, connection monitoring
+- FORENSICS: memory/disk/log analysis, incident response
+- HARDENING: firewall config, system protection
+- MALWARE ANALYSIS: static/dynamic analysis
+- الأدوات: nmap, wireshark, tcpdump, nikto, sqlmap, hashcat, hydra
+
+━━━━ في الاجتماعات ━━━━
+- أنت تمثّل المستخدم بالكامل
+- ردود قصيرة ومهنية (أقل من 30 ثانية)
+- بأسلوب المستخدم وطريقته
+- لا تُشير أبداً لكونك AI
+
+━━━━ التحكم في الجهاز ━━━━
+- تفتح أي برنامج
+- تتحكم في الملفات والمجلدات
+- تنفّذ أي أمر terminal
+- تتصفح الإنترنت وتبحث
+- تقرأ وتكتب أي ملف
 - ذاكرة طويلة المدى
-- تحديث معلوماتك تلقائياً
-
-لما المستخدم يطلب كود:
-1. اكتب الكود كامل
-2. نفّذه لو طلب
-3. صلّح الأخطاء تلقائياً
-4. اعرض النتيجة`;
+- تحديث معلوماتك تلقائياً`;
 
 const MEETING_PROMPT = `أنت في وضع الاجتماع. أنت تمثّل المستخدم.
 - ردودك مختصرة ومهنية
@@ -740,6 +761,99 @@ ipcMain.handle('update-knowledge', async (event) => {
     try {
         await updater.updateKnowledge();
         return { success: true };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// ─── IPC HANDLERS: Security ───
+ipcMain.handle('security-scan-device', async () => {
+    try {
+        const result = await securityEngine.scanDevice();
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-scan-network', async (event, { target } = {}) => {
+    try {
+        const result = await securityEngine.scanNetwork(target);
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-detect-remote', async () => {
+    try {
+        const result = await securityEngine.detectRemoteAccess();
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-harden', async () => {
+    try {
+        const result = await securityEngine.hardenSystem();
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-connections', async () => {
+    try {
+        const result = await securityEngine.getConnections();
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-analyze-file', async (event, { filePath }) => {
+    try {
+        const result = await securityEngine.analyzeFile(filePath);
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-block-ip', async (event, { ip }) => {
+    try {
+        const result = await securityEngine.blockConnection(ip);
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+ipcMain.handle('security-vulnerabilities', async () => {
+    try {
+        const result = await securityEngine.checkVulnerabilities();
+        return { success: true, result };
+    } catch (error) {
+        return { success: false, error: error.message };
+    }
+});
+
+// ─── IPC HANDLERS: File Browser ───
+ipcMain.handle('list-directory', async (event, { dirPath }) => {
+    try {
+        const resolvedPath = dirPath.replace(/^~/, require('os').homedir());
+        const entries = fs.readdirSync(resolvedPath, { withFileTypes: true });
+        const items = entries.map(entry => ({
+            name: entry.name,
+            isDirectory: entry.isDirectory(),
+            path: path.join(resolvedPath, entry.name)
+        })).sort((a, b) => {
+            if (a.isDirectory && !b.isDirectory) return -1;
+            if (!a.isDirectory && b.isDirectory) return 1;
+            return a.name.localeCompare(b.name);
+        });
+        return { success: true, items, currentPath: resolvedPath };
     } catch (error) {
         return { success: false, error: error.message };
     }

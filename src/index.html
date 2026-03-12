@@ -667,6 +667,14 @@
                 <span class="icon">&#x1F3A4;</span>
                 <span>الصوت</span>
             </div>
+            <div class="nav-item" data-tab="security" onclick="switchTab('security')">
+                <span class="icon">&#x1F6E1;</span>
+                <span>الأمن</span>
+            </div>
+            <div class="nav-item" data-tab="files" onclick="switchTab('files')">
+                <span class="icon">&#x1F5C2;</span>
+                <span>الملفات</span>
+            </div>
             <div class="nav-item" data-tab="settings" onclick="switchTab('settings')">
                 <span class="icon">&#x2699;</span>
                 <span>الإعدادات</span>
@@ -802,6 +810,93 @@
                             <div id="blackhole-status" style="font-size:13px;color:var(--text-secondary);">جاري الفحص...</div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Security Tab -->
+        <div class="tab-content" id="tab-security">
+            <div class="voice-panel">
+                <div class="voice-title" style="font-size:24px;">الأمن السيبراني</div>
+
+                <!-- Device Status -->
+                <div class="voice-step">
+                    <div class="step-header">
+                        <div class="step-number" style="background:#ff446622;color:var(--error);">&#x1F6E1;</div>
+                        <div class="step-title">حالة الجهاز</div>
+                    </div>
+                    <div id="device-status" style="font-size:13px;color:var(--text-secondary);margin-bottom:12px;">اضغط "فحص" لبدء الفحص الشامل</div>
+                    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                        <button class="voice-btn" onclick="securityAction('scan-device')" style="font-size:13px;padding:8px 18px;">فحص الجهاز</button>
+                        <button class="voice-btn" onclick="securityAction('scan-network')" style="font-size:13px;padding:8px 18px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">فحص الشبكة</button>
+                        <button class="voice-btn" onclick="securityAction('detect-remote')" style="font-size:13px;padding:8px 18px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">كشف التجسس</button>
+                        <button class="voice-btn" onclick="securityAction('harden')" style="font-size:13px;padding:8px 18px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">تقوية الحماية</button>
+                    </div>
+                </div>
+
+                <!-- Connections -->
+                <div class="voice-step">
+                    <div class="step-header">
+                        <div class="step-number" style="background:var(--accent-dim);color:var(--accent);">&#x1F310;</div>
+                        <div class="step-title">الاتصالات النشطة</div>
+                    </div>
+                    <button class="voice-btn" onclick="securityAction('connections')" style="font-size:13px;padding:8px 18px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);margin-bottom:10px;">تحديث</button>
+                    <div id="connections-list" style="background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:12px;max-height:250px;overflow-y:auto;font-family:var(--font-mono);font-size:11px;color:var(--text-secondary);direction:ltr;text-align:left;"></div>
+                </div>
+
+                <!-- File Analysis -->
+                <div class="voice-step">
+                    <div class="step-header">
+                        <div class="step-number" style="background:#ffaa0022;color:var(--warning);">&#x1F50D;</div>
+                        <div class="step-title">تحليل ملف مشبوه</div>
+                    </div>
+                    <div class="test-input-group">
+                        <input type="text" class="test-input" id="analyze-file-path" placeholder="/path/to/suspicious/file" dir="ltr" style="text-align:left;">
+                        <button class="voice-btn" onclick="securityAction('analyze-file')" style="font-size:13px;padding:8px 18px;">تحليل</button>
+                    </div>
+                </div>
+
+                <!-- Block IP -->
+                <div class="voice-step">
+                    <div class="step-header">
+                        <div class="step-number" style="background:#ff446622;color:var(--error);">&#x26D4;</div>
+                        <div class="step-title">حظر IP</div>
+                    </div>
+                    <div class="test-input-group">
+                        <input type="text" class="test-input" id="block-ip-input" placeholder="192.168.1.100" dir="ltr" style="text-align:left;">
+                        <button class="voice-btn danger" onclick="securityAction('block-ip')" style="font-size:13px;padding:8px 18px;">حظر</button>
+                    </div>
+                </div>
+
+                <!-- Security Log -->
+                <div class="voice-step">
+                    <div class="step-header">
+                        <div class="step-number">&#x1F4CB;</div>
+                        <div class="step-title">سجل التنبيهات</div>
+                    </div>
+                    <div id="security-log" class="meeting-log" style="display:block;min-height:100px;">لا توجد تنبيهات بعد.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Files Tab -->
+        <div class="tab-content" id="tab-files">
+            <div class="voice-panel">
+                <div class="voice-title" style="font-size:24px;">مستعرض الملفات</div>
+
+                <div class="voice-step" style="padding:14px;">
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                        <button class="voice-btn" onclick="navigateFiles('~')" style="font-size:11px;padding:5px 12px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">Home</button>
+                        <button class="voice-btn" onclick="navigateFiles('~/Desktop')" style="font-size:11px;padding:5px 12px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">Desktop</button>
+                        <button class="voice-btn" onclick="navigateFiles('~/Documents')" style="font-size:11px;padding:5px 12px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">Documents</button>
+                        <button class="voice-btn" onclick="navigateFiles('~/Downloads')" style="font-size:11px;padding:5px 12px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">Downloads</button>
+                        <button class="voice-btn" onclick="navigateFiles('/')" style="font-size:11px;padding:5px 12px;background:var(--bg-tertiary);color:var(--text-primary);border:1px solid var(--border);">/</button>
+                    </div>
+                    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+                        <button onclick="goUpDirectory()" style="background:var(--bg-tertiary);border:1px solid var(--border);color:var(--accent);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:14px;">&#x2B06;</button>
+                        <div id="current-path" style="flex:1;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;padding:8px 12px;font-family:var(--font-mono);font-size:12px;color:var(--text-secondary);direction:ltr;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">~/Desktop</div>
+                    </div>
+                    <div id="file-list" style="max-height:500px;overflow-y:auto;"></div>
                 </div>
             </div>
         </div>
@@ -1325,6 +1420,194 @@ if (dropZone) {
         dropZone.classList.remove('dragover');
         uploadSamples();
     });
+}
+
+// ─── Security Functions ───
+async function securityAction(action) {
+    const logEl = document.getElementById('security-log');
+
+    function addLog(msg, color = 'var(--text-secondary)') {
+        const time = new Date().toLocaleTimeString('ar-EG');
+        logEl.innerHTML += `<div style="color:${color}">[${time}] ${msg}</div>`;
+        logEl.scrollTop = logEl.scrollHeight;
+    }
+
+    function formatResult(obj, maxLen = 600) {
+        if (!obj) return '';
+        const text = typeof obj === 'string' ? obj : JSON.stringify(obj, null, 2);
+        return text.substring(0, maxLen);
+    }
+
+    try {
+        switch (action) {
+            case 'scan-device': {
+                addLog('جاري فحص الجهاز...', 'var(--accent)');
+                document.getElementById('device-status').textContent = 'جاري الفحص...';
+                const r = await window.apex.securityScanDevice();
+                if (r.success) {
+                    const scan = r.result;
+                    const issues = scan.issues || [];
+                    addLog(`تم فحص الجهاز — ${issues.length} مشكلة`, issues.length > 0 ? 'var(--warning)' : 'var(--success)');
+                    document.getElementById('device-status').innerHTML = issues.length > 0
+                        ? `<span style="color:var(--warning)">${issues.length} تحذير</span>`
+                        : '<span style="color:var(--success)">آمن</span>';
+                    issues.forEach(i => addLog(`⚠ ${i}`, 'var(--warning)'));
+                    addLog(formatResult(scan), 'var(--text-muted)');
+                } else {
+                    addLog('فشل الفحص: ' + r.error, 'var(--error)');
+                }
+                break;
+            }
+            case 'scan-network': {
+                addLog('جاري فحص الشبكة...', 'var(--accent)');
+                const r = await window.apex.securityScanNetwork();
+                if (r.success) {
+                    const scan = r.result;
+                    addLog(`تم فحص الشبكة — ${scan.devices?.length || 0} جهاز`, 'var(--success)');
+                    addLog(formatResult(scan), 'var(--text-muted)');
+                } else {
+                    addLog('فشل فحص الشبكة: ' + r.error, 'var(--error)');
+                }
+                break;
+            }
+            case 'detect-remote': {
+                addLog('جاري كشف برامج التجسس...', 'var(--accent)');
+                const r = await window.apex.securityDetectRemote();
+                if (r.success) {
+                    const scan = r.result;
+                    const threats = scan.threats || [];
+                    if (threats.length > 0) {
+                        addLog(`تحذير! ${threats.length} تهديد محتمل!`, 'var(--error)');
+                        threats.forEach(t => addLog(`🔴 ${typeof t === 'string' ? t : t.name || JSON.stringify(t)}`, 'var(--error)'));
+                    } else {
+                        addLog('لم يتم العثور على برامج تجسس', 'var(--success)');
+                    }
+                    addLog(formatResult(scan), 'var(--text-muted)');
+                } else {
+                    addLog('فشل الكشف: ' + r.error, 'var(--error)');
+                }
+                break;
+            }
+            case 'harden': {
+                addLog('جاري تقوية الحماية...', 'var(--accent)');
+                const r = await window.apex.securityHarden();
+                if (r.success) {
+                    const actions = r.result.actions || [];
+                    addLog(`تم تنفيذ ${actions.length} إجراء حماية`, 'var(--success)');
+                    actions.forEach(a => addLog(`✓ ${typeof a === 'string' ? a : a.action || JSON.stringify(a)}`, 'var(--success)'));
+                } else {
+                    addLog('فشل: ' + r.error, 'var(--error)');
+                }
+                break;
+            }
+            case 'connections': {
+                const r = await window.apex.securityConnections();
+                const el = document.getElementById('connections-list');
+                if (r.success) {
+                    const conns = r.result.connections || [];
+                    el.textContent = conns.length > 0
+                        ? conns.map(c => `${c.process || c.name || '?'} → ${c.address || c.remote || '?'}:${c.port || '?'} (${c.state || c.protocol || '?'})`).join('\n')
+                        : 'لا توجد اتصالات نشطة';
+                } else {
+                    el.textContent = 'خطأ: ' + r.error;
+                }
+                break;
+            }
+            case 'analyze-file': {
+                const filePath = document.getElementById('analyze-file-path').value;
+                if (!filePath) { addLog('ادخل مسار الملف', 'var(--warning)'); return; }
+                addLog(`جاري تحليل: ${filePath}`, 'var(--accent)');
+                const r = await window.apex.securityAnalyzeFile({ filePath });
+                if (r.success) {
+                    addLog('تم التحليل', 'var(--success)');
+                    addLog(formatResult(r.result), 'var(--text-muted)');
+                } else {
+                    addLog('فشل التحليل: ' + r.error, 'var(--error)');
+                }
+                break;
+            }
+            case 'block-ip': {
+                const ip = document.getElementById('block-ip-input').value;
+                if (!ip) { addLog('ادخل عنوان IP', 'var(--warning)'); return; }
+                addLog(`جاري حظر: ${ip}`, 'var(--error)');
+                const r = await window.apex.securityBlockIP({ ip });
+                if (r.success) {
+                    addLog(`تم حظر ${ip}`, 'var(--warning)');
+                } else {
+                    addLog('فشل الحظر: ' + r.error, 'var(--error)');
+                }
+                break;
+            }
+        }
+    } catch (e) {
+        addLog('خطأ: ' + e.message, 'var(--error)');
+    }
+}
+
+// ─── Files Browser ───
+let currentDir = '~/Desktop';
+
+async function navigateFiles(dirPath) {
+    currentDir = dirPath;
+    document.getElementById('current-path').textContent = dirPath;
+
+    try {
+        const r = await window.apex.listDirectory({ dirPath });
+        const listEl = document.getElementById('file-list');
+        listEl.innerHTML = '';
+
+        if (!r.success) {
+            listEl.innerHTML = `<div style="color:var(--error);padding:12px;">خطأ: ${r.error}</div>`;
+            return;
+        }
+
+        currentDir = r.currentPath || dirPath;
+        document.getElementById('current-path').textContent = currentDir;
+
+        r.items.forEach(item => {
+            if (item.name.startsWith('.')) return; // hide hidden files
+
+            const row = document.createElement('div');
+            row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--border);cursor:pointer;transition:background 0.15s;border-radius:6px;';
+            row.onmouseenter = () => row.style.background = 'var(--bg-hover)';
+            row.onmouseleave = () => row.style.background = '';
+
+            const icon = item.isDirectory ? '&#x1F4C1;' : '&#x1F4C4;';
+
+            row.innerHTML = `
+                <span style="font-size:18px;">${icon}</span>
+                <span style="flex:1;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:left;">${item.name}</span>
+            `;
+
+            if (item.isDirectory) {
+                row.onclick = () => navigateFiles(item.path);
+            } else {
+                row.onclick = async () => {
+                    try {
+                        const content = await window.apex.readFile({ filePath: item.path });
+                        if (content.success) {
+                            switchTab('chat');
+                            if (welcomeScreen) welcomeScreen.remove();
+                            addMessage('ai', `**ملف: ${item.name}**\n\`\`\`\n${content.content.substring(0, 3000)}\n\`\`\``);
+                        }
+                    } catch(e) {
+                        await window.apex.executeTerminal({ command: `open "${item.path}"` });
+                    }
+                };
+            }
+
+            listEl.appendChild(row);
+        });
+    } catch (e) {
+        document.getElementById('file-list').innerHTML = `<div style="color:var(--error);padding:12px;">خطأ: ${e.message}</div>`;
+    }
+}
+
+function goUpDirectory() {
+    const parts = currentDir.split('/');
+    parts.pop();
+    const parent = parts.join('/') || '/';
+    navigateFiles(parent);
 }
 
 // ─── Quick Meeting Toggle ───

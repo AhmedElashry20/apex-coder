@@ -39,8 +39,22 @@ contextBridge.exposeInMainWorld('apex', {
     // File Operations
     readFile: (data) => ipcRenderer.invoke('read-file', data),
     writeFile: (data) => ipcRenderer.invoke('write-file', data),
+    listDirectory: (data) => ipcRenderer.invoke('list-directory', data),
+
+    // Security
+    securityScanDevice: () => ipcRenderer.invoke('security-scan-device'),
+    securityScanNetwork: (data) => ipcRenderer.invoke('security-scan-network', data || {}),
+    securityDetectRemote: () => ipcRenderer.invoke('security-detect-remote'),
+    securityHarden: () => ipcRenderer.invoke('security-harden'),
+    securityConnections: () => ipcRenderer.invoke('security-connections'),
+    securityAnalyzeFile: (data) => ipcRenderer.invoke('security-analyze-file', data),
+    securityBlockIP: (data) => ipcRenderer.invoke('security-block-ip', data),
+    securityVulnerabilities: () => ipcRenderer.invoke('security-vulnerabilities'),
 
     // System
     getSystemInfo: () => ipcRenderer.invoke('get-system-info'),
-    updateKnowledge: () => ipcRenderer.invoke('update-knowledge')
+    updateKnowledge: () => ipcRenderer.invoke('update-knowledge'),
+
+    // Tab switching from tray
+    onSwitchTab: (callback) => ipcRenderer.on('switch-tab', (_, tab) => callback(tab))
 });
