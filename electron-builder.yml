@@ -1,0 +1,46 @@
+appId: com.elashry.apex
+productName: APEX
+copyright: Copyright © 2026 ElAshry AI
+
+directories:
+  output: dist
+  buildResources: assets
+
+files:
+  - src/**/*
+  - package.json
+  - requirements.txt
+  - setup.sh
+
+extraResources:
+  - from: src/voice/
+    to: voice/
+    filter:
+      - "**/*.py"
+
+mac:
+  category: public.app-category.developer-tools
+  target:
+    - target: dmg
+      arch:
+        - x64
+  icon: assets/icon.png
+  darkModeSupport: true
+  hardenedRuntime: false
+  gatekeeperAssess: false
+  identity: null
+
+dmg:
+  title: APEX Installer
+  backgroundColor: "#0a0a0f"
+  window:
+    width: 540
+    height: 380
+  contents:
+    - x: 140
+      y: 200
+      type: file
+    - x: 400
+      y: 200
+      type: link
+      path: /Applications

@@ -5,12 +5,12 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "dev": "electron . --dev"
+    "dev": "electron . --dev",
+    "build": "electron-builder --mac --x64"
   },
   "author": "ElAshry AI",
   "license": "MIT",
   "dependencies": {
-    "electron": "^31.0.0",
     "better-sqlite3": "^11.0.0",
     "chromadb": "^1.8.1",
     "cheerio": "^1.0.0",
@@ -20,6 +20,7 @@
     "node-fetch": "^2.7.0"
   },
   "devDependencies": {
+    "electron": "^31.0.0",
     "electron-builder": "^24.13.0"
   }
 }
