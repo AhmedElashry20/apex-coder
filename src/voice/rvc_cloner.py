@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-APEX RVC Voice Cloner — Train and convert voice using RVC v2
+elashry ai RVC Voice Cloner — Train and convert voice using RVC v2
 """
 
 import os

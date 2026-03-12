@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>APEX — Setup</title>
+    <title>elashry ai — Setup</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
@@ -200,7 +200,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">APEX</div>
+        <div class="logo">elashry ai</div>
         <div class="subtitle">إعداد AI Agent — أول مرة فقط</div>
     </div>
 
@@ -319,7 +319,7 @@
             <div class="progress-fill" id="progress-fill"></div>
         </div>
         <button class="install-btn" id="install-btn" onclick="startInstallation()">ابدأ التثبيت</button>
-        <button class="start-btn" id="start-btn" onclick="launchApp()">افتح APEX</button>
+        <button class="start-btn" id="start-btn" onclick="launchApp()">افتح elashry ai</button>
         <div class="footer-text" id="footer-text">اضغط لبدء تثبيت المكونات المطلوبة</div>
         <div class="warning-text" id="warning-text" style="display:none">تحميل النماذج يحتاج إنترنت (~25GB) — ممكن ياخد وقت</div>
     </div>
@@ -412,7 +412,7 @@ async function startInstallation() {
 
     // All done
     document.getElementById('progress-fill').style.width = '100%';
-    document.getElementById('footer-text').textContent = 'تم التثبيت بنجاح! اضغط لفتح APEX';
+    document.getElementById('footer-text').textContent = 'تم التثبيت بنجاح! اضغط لفتح elashry ai';
     document.getElementById('warning-text').style.display = 'none';
     installBtn.style.display = 'none';
     document.getElementById('start-btn').style.display = 'inline-block';
@@ -422,7 +422,7 @@ async function startInstallation() {
 async function launchApp() {
     document.getElementById('start-btn').disabled = true;
     document.getElementById('start-btn').textContent = 'جاري التحميل...';
-    document.getElementById('footer-text').textContent = 'جاري تشغيل APEX...';
+    document.getElementById('footer-text').textContent = 'جاري تشغيل elashry ai...';
     await window.apexSetup.launchApp();
 }
 </script>

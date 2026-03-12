@@ -1,6 +1,6 @@
 #!/bin/bash
 #═══════════════════════════════════════════════════════
-#  APEX — Build macOS Installer (.app + .dmg)
+#  elashry ai — Build macOS Installer (.app + .dmg)
 #═══════════════════════════════════════════════════════
 
 set -e
@@ -14,7 +14,7 @@ PROJECT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$PROJECT_DIR"
 
 echo -e "${CYAN}═══════════════════════════════════════════${NC}"
-echo -e "${CYAN}  Building APEX Installer...${NC}"
+echo -e "${CYAN}  Building elashry ai Installer...${NC}"
 echo -e "${CYAN}═══════════════════════════════════════════${NC}"
 
 # Step 1: Install dependencies
@@ -26,7 +26,7 @@ echo -e "${YELLOW}[2/4] Setting up electron-builder...${NC}"
 npx electron-builder install-app-deps 2>/dev/null || true
 
 # Step 3: Build the app
-echo -e "${YELLOW}[3/4] Building APEX.app...${NC}"
+echo -e "${YELLOW}[3/4] Building elashry ai.app...${NC}"
 npx electron-builder --mac --config electron-builder.yml
 
 # Step 4: Done
@@ -36,5 +36,5 @@ echo -e "${GREEN}  Build Complete!${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════${NC}"
 echo ""
 echo -e "  DMG location: ${CYAN}dist/${NC}"
-echo -e "  Double-click the .dmg to install APEX"
+echo -e "  Double-click the .dmg to install elashry ai"
 echo ""

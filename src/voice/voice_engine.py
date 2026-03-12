@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-APEX Voice Engine — Main orchestrator for voice cloning system
+elashry ai Voice Engine — Main orchestrator for voice cloning system
 Handles setup, training, testing, and coordination of all voice components
 """
 
@@ -35,7 +35,7 @@ class VoiceEngine:
         """Complete voice setup pipeline"""
         samples_path = samples_path or self.samples_dir
 
-        print("SETUP:Starting APEX voice setup...", flush=True)
+        print("SETUP:Starting elashry ai voice setup...", flush=True)
 
         # Step 1: Check BlackHole
         print("SETUP:Step 1/5 — Checking BlackHole...", flush=True)
@@ -107,7 +107,7 @@ class VoiceEngine:
             "quality": self.cloner.get_voice_quality() if model_exists else None
         }
 
-    def test_voice(self, text="مرحباً، أنا APEX", language=None):
+    def test_voice(self, text="مرحباً، أنا elashry ai", language=None):
         """Test voice by generating and playing a sample"""
         if self.speaker is None:
             self.speaker = TTSSpeaker()
@@ -231,7 +231,7 @@ def main():
         print(json.dumps(result, ensure_ascii=False, indent=2))
 
     elif command == 'test':
-        text = sys.argv[2] if len(sys.argv) > 2 else "مرحباً، أنا APEX"
+        text = sys.argv[2] if len(sys.argv) > 2 else "مرحباً، أنا elashry ai"
         language = sys.argv[3] if len(sys.argv) > 3 else None
         result = engine.test_voice(text, language)
         print(json.dumps(result, indent=2))

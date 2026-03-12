@@ -1,5 +1,5 @@
-appId: com.elashry.apex
-productName: APEX
+appId: com.elashry.ai
+productName: elashry ai
 copyright: Copyright © 2026 ElAshry AI
 
 directories:
@@ -31,7 +31,7 @@ mac:
   identity: null
 
 dmg:
-  title: APEX Installer
+  title: elashry ai
   backgroundColor: "#0a0a0f"
   window:
     width: 540

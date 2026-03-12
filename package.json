@@ -1,7 +1,7 @@
 {
-  "name": "apex-coder",
+  "name": "elashry-ai",
   "version": "1.0.0",
-  "description": "APEX — Full Local AI Agent for Mac with Voice Cloning & Meeting Mode",
+  "description": "elashry ai — Full Local AI Agent for Mac with Voice Cloning & Meeting Mode",
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-APEX Whisper Listener — Real-time speech-to-text
+elashry ai Whisper Listener — Real-time speech-to-text
 Supports Arabic and English with automatic language detection
 """
 
@@ -227,7 +227,7 @@ def main():
         return
 
     # Default: start listening
-    print("Starting APEX Whisper Listener...", flush=True)
+    print("Starting elashry ai Whisper Listener...", flush=True)
     listener.start_listening()
 
     try:

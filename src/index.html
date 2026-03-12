@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>APEX — AI Agent</title>
+    <title>elashry ai — AI Agent</title>
     <style>
         /* ═══════════════════════════════════════════════════════ */
-        /*  APEX — Full Dark Theme UI                             */
+        /*  elashry ai — Full Dark Theme UI                             */
         /* ═══════════════════════════════════════════════════════ */
 
         * {
@@ -654,7 +654,7 @@
         <div class="sidebar-header">
             <div class="logo">
                 <div class="logo-icon">A</div>
-                <span class="logo-text">APEX</span>
+                <span class="logo-text">elashry ai</span>
             </div>
         </div>
 
@@ -700,7 +700,7 @@
         <div class="tab-content active" id="tab-chat">
             <div class="chat-container" id="chat-container">
                 <div class="welcome-screen" id="welcome-screen">
-                    <div class="welcome-title">APEX</div>
+                    <div class="welcome-title">elashry ai</div>
                     <div class="welcome-sub">
                         AI Agent محلي بالكامل — برمجة، تصفح، تحكم بالماك، واجتماعات بصوتك.
                         <br>كل حاجة على جهازك، مفيش سيرفر خارجي.
@@ -738,7 +738,7 @@
         <!-- Voice Tab -->
         <div class="tab-content" id="tab-voice">
             <div class="voice-panel">
-                <div class="voice-title">APEX Voice Clone</div>
+                <div class="voice-title">elashry ai Voice Clone</div>
 
                 <!-- Step 1: Upload Samples -->
                 <div class="voice-step">
@@ -788,7 +788,7 @@
                         <div class="step-number">4</div>
                         <div class="step-title">وضع الاجتماع</div>
                     </div>
-                    <div class="step-desc">APEX يحضر الاجتماع بدلاً عنك — يسمع الأسئلة ويجاوب بصوتك</div>
+                    <div class="step-desc">elashry ai يحضر الاجتماع بدلاً عنك — يسمع الأسئلة ويجاوب بصوتك</div>
                     <div style="display:flex;gap:10px;">
                         <button class="voice-btn success" id="meeting-start-btn" onclick="startMeeting()">ابدأ الاجتماع</button>
                         <button class="voice-btn danger" id="meeting-stop-btn" onclick="stopMeeting()" style="display:none">أوقف الاجتماع</button>
@@ -945,7 +945,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.0/marked.min.js"></script>
 <script>
 // ═══════════════════════════════════════════════════════
-//  APEX — Frontend Logic
+//  elashry ai — Frontend Logic
 // ═══════════════════════════════════════════════════════
 
 const chatContainer = document.getElementById('chat-container');
@@ -1071,7 +1071,7 @@ function addMessage(role, content) {
     div.innerHTML = `
         <div class="message-header">
             <div class="message-avatar">${role === 'user' ? 'U' : 'A'}</div>
-            <span class="message-name">${role === 'user' ? 'أنت' : 'APEX'}</span>
+            <span class="message-name">${role === 'user' ? 'أنت' : 'elashry ai'}</span>
         </div>
         <div class="message-body" dir="${dir}">${
             role === 'user'
@@ -1091,7 +1091,7 @@ function createAIMessageDiv() {
     div.innerHTML = `
         <div class="message-header">
             <div class="message-avatar">A</div>
-            <span class="message-name">APEX</span>
+            <span class="message-name">elashry ai</span>
         </div>
         <div class="message-body" id="stream-body"></div>
     `;
@@ -1133,7 +1133,7 @@ function addTypingIndicator() {
     div.innerHTML = `
         <div class="message-header">
             <div class="message-avatar">A</div>
-            <span class="message-name">APEX</span>
+            <span class="message-name">elashry ai</span>
         </div>
         <div class="message-body">
             <div class="typing-indicator">

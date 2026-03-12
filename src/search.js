@@ -118,7 +118,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://api.github.com/search/repositories?q=${encodeURIComponent(query)}&sort=stars&per_page=${maxResults}`,
-                { 'User-Agent': 'APEX-AI-Agent', 'Accept': 'application/vnd.github.v3+json' }
+                { 'User-Agent': 'elashry-ai-agent', 'Accept': 'application/vnd.github.v3+json' }
             );
             return (data.items || []).map(r => ({
                 name: r.full_name, description: r.description || '', url: r.html_url,
@@ -133,7 +133,7 @@ class SearchEngine {
             if (language) q += `+language:${encodeURIComponent(language)}`;
             const data = await this._jsonGet(
                 `https://api.github.com/search/code?q=${q}&per_page=${maxResults}`,
-                { 'User-Agent': 'APEX-AI-Agent', 'Accept': 'application/vnd.github.v3+json' }
+                { 'User-Agent': 'elashry-ai-agent', 'Accept': 'application/vnd.github.v3+json' }
             );
             return (data.items || []).map(item => ({
                 name: item.name, path: item.path, repo: item.repository?.full_name || '', url: item.html_url
@@ -145,7 +145,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://api.github.com/gists/public?per_page=${maxResults}`,
-                { 'User-Agent': 'APEX-AI-Agent', 'Accept': 'application/vnd.github.v3+json' }
+                { 'User-Agent': 'elashry-ai-agent', 'Accept': 'application/vnd.github.v3+json' }
             );
             return (data || []).filter(g => {
                 const desc = (g.description || '').toLowerCase();
@@ -161,7 +161,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://api.github.com/repos/${owner}/${repo}/contents/${filePath}`,
-                { 'User-Agent': 'APEX-AI-Agent', 'Accept': 'application/vnd.github.v3+json' }
+                { 'User-Agent': 'elashry-ai-agent', 'Accept': 'application/vnd.github.v3+json' }
             );
             if (data.content) {
                 return { name: data.name, path: data.path, content: Buffer.from(data.content, 'base64').toString('utf-8'), size: data.size, url: data.html_url };
@@ -174,7 +174,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://api.github.com/repos/${owner}/${repo}/readme`,
-                { 'User-Agent': 'APEX-AI-Agent', 'Accept': 'application/vnd.github.v3+json' }
+                { 'User-Agent': 'elashry-ai-agent', 'Accept': 'application/vnd.github.v3+json' }
             );
             return data.content ? Buffer.from(data.content, 'base64').toString('utf-8') : null;
         } catch { return null; }
@@ -184,7 +184,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://api.github.com/search/repositories?q=topic:${encodeURIComponent(topic)}&sort=stars&per_page=${maxResults}`,
-                { 'User-Agent': 'APEX-AI-Agent', 'Accept': 'application/vnd.github.v3+json' }
+                { 'User-Agent': 'elashry-ai-agent', 'Accept': 'application/vnd.github.v3+json' }
             );
             return (data.items || []).map(r => ({
                 name: r.full_name, description: r.description || '', url: r.html_url,
@@ -307,7 +307,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://crates.io/api/v1/crates?q=${encodeURIComponent(query)}&per_page=${maxResults}`,
-                { 'User-Agent': 'APEX-AI-Agent' }
+                { 'User-Agent': 'elashry-ai-agent' }
             );
             return (data.crates || []).map(c => ({
                 name: c.name, version: c.max_version, description: c.description || '',
@@ -587,7 +587,7 @@ class SearchEngine {
         try {
             const data = await this._jsonGet(
                 `https://www.reddit.com/r/programming/search.json?q=${encodeURIComponent(query)}&restrict_sr=on&sort=relevance&limit=${maxResults}`,
-                { 'User-Agent': 'APEX-AI-Agent/1.0' }
+                { 'User-Agent': 'elashry-ai-agent/1.0' }
             );
             return (data.data?.children || []).map(c => ({
                 title: c.data.title, url: `https://reddit.com${c.data.permalink}`,

@@ -1,6 +1,6 @@
 #!/bin/bash
 #═══════════════════════════════════════════════════════
-#  APEX — Full Setup Script
+#  elashry ai — Full Setup Script
 #  Run once: bash setup.sh
 #═══════════════════════════════════════════════════════
 
@@ -21,7 +21,7 @@ echo "   / _ \ | |_) |  _|  \  / "
 echo "  / ___ \|  __/| |___ /  \ "
 echo " /_/   \_\_|   |_____/_/\_\\"
 echo ""
-echo "  APEX AI — Full Local Setup"
+echo "  elashry ai AI — Full Local Setup"
 echo "═══════════════════════════════════════════════════════"
 echo -e "${NC}"
 
@@ -133,10 +133,10 @@ print('Whisper model ready!')
 # ─── Done ───
 echo ""
 echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
-echo -e "${GREEN}  APEX Setup Complete!${NC}"
+echo -e "${GREEN}  elashry ai Setup Complete!${NC}"
 echo -e "${GREEN}═══════════════════════════════════════════════════════${NC}"
 echo ""
-echo -e "${CYAN}  To start APEX:${NC}"
+echo -e "${CYAN}  To start elashry ai:${NC}"
 echo -e "${YELLOW}    npm start${NC}"
 echo ""
 echo -e "${CYAN}  Models installed:${NC}"

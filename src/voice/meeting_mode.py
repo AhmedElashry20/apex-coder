@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-APEX Meeting Mode — Attend meetings and respond with cloned voice
+elashry ai Meeting Mode — Attend meetings and respond with cloned voice
 Listens to meeting audio, generates AI responses, speaks with user's voice
 """
 
@@ -368,7 +368,7 @@ class MeetingMode:
 
 def main():
     import argparse
-    parser = argparse.ArgumentParser(description='APEX Meeting Mode')
+    parser = argparse.ArgumentParser(description='elashry ai Meeting Mode')
     parser.add_argument('action', choices=['start', 'test'], default='start', nargs='?')
     parser.add_argument('--ollama-url', default='http://localhost:11434')
     parser.add_argument('--model', default='qwen2.5:14b')

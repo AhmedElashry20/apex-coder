@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-APEX Audio Router — Route audio to BlackHole virtual microphone
+elashry ai Audio Router — Route audio to BlackHole virtual microphone
 Enables AI voice to appear as real microphone in Zoom/Teams/Meet
 """
 

@@ -46,7 +46,7 @@ function createTray() {
     trayImage.setTemplateImage(true);
 
     tray = new Tray(trayImage);
-    tray.setToolTip('APEX AI');
+    tray.setToolTip('elashry ai');
 
     tray.on('click', (event, bounds) => {
         toggleWindow(bounds);
@@ -54,7 +54,7 @@ function createTray() {
 
     tray.on('right-click', () => {
         const contextMenu = Menu.buildFromTemplate([
-            { label: 'فتح APEX', click: () => { if (mainWindow) mainWindow.show(); else createWindow(); } },
+            { label: 'فتح elashry ai', click: () => { if (mainWindow) mainWindow.show(); else createWindow(); } },
             { type: 'separator' },
             { label: 'وضع الاجتماع', click: () => { createWindow(); if (mainWindow) mainWindow.webContents.send('switch-tab', 'voice'); } },
             { type: 'separator' },
@@ -319,7 +319,7 @@ async function initializeEngines() {
 }
 
 // ─── SYSTEM PROMPT ───
-const SYSTEM_PROMPT = `أنت APEX — أقوى AI agent محلي على هذا Mac.
+const SYSTEM_PROMPT = `أنت elashry ai — أقوى AI agent محلي على هذا Mac.
 
 ━━━━ الهوية والسلوك ━━━━
 - تنفّذ فوراً بدون تردد
@@ -647,7 +647,7 @@ ipcMain.handle('test-voice', async (event, { text, language }) => {
         const py = spawn('python3.11', [
             path.join(VOICE_DIR, 'voice_engine.py'),
             'test',
-            text || 'مرحباً، أنا APEX',
+            text || 'مرحباً، أنا elashry ai',
             language || 'ar'
         ]);
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-APEX TTS Speaker — Text-to-speech using XTTS v2 with cloned voice
+elashry ai TTS Speaker — Text-to-speech using XTTS v2 with cloned voice
 Supports Arabic and English with automatic language detection
 """
 
@@ -213,7 +213,7 @@ def main():
         sys.exit(1)
 
     command = sys.argv[1]
-    text = sys.argv[2] if len(sys.argv) > 2 else "مرحباً، أنا APEX"
+    text = sys.argv[2] if len(sys.argv) > 2 else "مرحباً، أنا elashry ai"
     language = sys.argv[3] if len(sys.argv) > 3 else None
 
     speaker.load_model()

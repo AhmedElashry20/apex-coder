@@ -1,5 +1,5 @@
 /**
- * APEX Coder — Security Engine
+ * elashry ai Coder — Security Engine
  * Authorized security testing and defensive security module for macOS.
  *
  * Every method is async and returns a structured object.
@@ -1097,7 +1097,7 @@ class SecurityEngine {
       success: true,
       locked: true,
       lockFile,
-      message: 'APEX app is now locked. Use unlockApp(password) to unlock.',
+      message: 'elashry ai app is now locked. Use unlockApp(password) to unlock.',
     };
   }
 
