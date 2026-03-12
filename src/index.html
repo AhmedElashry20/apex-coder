@@ -612,6 +612,29 @@
         .hljs-variable { color: #e06c75; }
         .hljs-literal { color: #d19a66; }
 
+        /* ─── Quick Action Pills ─── */
+        .quick-action-pill {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 5px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .quick-action-pill:hover { border-color: var(--accent); color: var(--accent); }
+        .quick-action-pill.active-meeting { border-color: var(--success); color: var(--success); background: #00ff8812; }
+        .pill-dot {
+            width: 6px; height: 6px; border-radius: 50%;
+            background: var(--text-muted);
+            display: inline-block;
+        }
+        .pill-dot.live { background: var(--success); box-shadow: 0 0 6px var(--success); animation: pulse 1.5s infinite; }
+
         /* ─── Responsive ─── */
         @media (max-width: 900px) {
             .sidebar { width: 60px; }
@@ -684,8 +707,21 @@
             </div>
 
             <div class="input-area">
+                <!-- Quick Action Buttons -->
+                <div style="display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap;">
+                    <button class="quick-action-pill" id="meeting-pill" onclick="quickStartMeeting()">
+                        <span class="pill-dot" id="meeting-pill-dot"></span>
+                        &#x1F399; وضع الاجتماع
+                    </button>
+                    <button class="quick-action-pill" onclick="sendQuick('ابحث في الإنترنت عن')">
+                        &#x1F310; بحث
+                    </button>
+                    <button class="quick-action-pill" onclick="sendQuick('نفّذ في Terminal:')">
+                        &#x1F4BB; Terminal
+                    </button>
+                </div>
                 <div class="input-wrapper">
-                    <textarea id="chat-input" rows="1" placeholder="اكتب رسالتك هنا..." dir="auto"></textarea>
+                    <textarea id="chat-input" rows="1" placeholder="اكتب رسالتك أو أوامرك هنا... (Enter للإرسال، لو AI شغال هيتضاف للقائمة)" dir="auto"></textarea>
                     <button class="send-btn" id="send-btn" onclick="sendMessage()">&#x27A4;</button>
                 </div>
             </div>
@@ -1289,6 +1325,155 @@ if (dropZone) {
         dropZone.classList.remove('dragover');
         uploadSamples();
     });
+}
+
+// ─── Quick Meeting Toggle ───
+let meetingActive = false;
+
+async function quickStartMeeting() {
+    const pill = document.getElementById('meeting-pill');
+    const dot = document.getElementById('meeting-pill-dot');
+
+    if (meetingActive) {
+        // Stop meeting
+        await window.apex.stopMeeting();
+        meetingActive = false;
+        pill.classList.remove('active-meeting');
+        dot.classList.remove('live');
+        pill.innerHTML = '<span class="pill-dot" id="meeting-pill-dot"></span> &#x1F399; وضع الاجتماع';
+
+        // Show summary
+        const summary = await window.apex.getMeetingSummary();
+        if (summary.success) {
+            if (welcomeScreen) welcomeScreen.remove();
+            addMessage('ai', '**انتهى الاجتماع — الملخص:**\n\n' + summary.summary);
+        }
+    } else {
+        // Start meeting
+        pill.classList.add('active-meeting');
+        dot.classList.add('live');
+        pill.innerHTML = '<span class="pill-dot live" id="meeting-pill-dot"></span> &#x1F534; الاجتماع شغال — اضغط للإيقاف';
+        meetingActive = true;
+
+        window.apex.onMeetingEvent((msg) => {
+            // Show meeting events in chat
+            if (msg.includes('MEETING_HEARD') || msg.includes('MEETING_RESPONSE')) {
+                try {
+                    const data = JSON.parse(msg.split(':').slice(1).join(':'));
+                    if (data.text) {
+                        if (welcomeScreen) welcomeScreen.remove();
+                        addMessage('ai', '**[اجتماع]** ' + data.text);
+                    }
+                } catch(e) {}
+            }
+        });
+
+        window.apex.onMeetingEnded(() => {
+            meetingActive = false;
+            pill.classList.remove('active-meeting');
+            pill.innerHTML = '<span class="pill-dot" id="meeting-pill-dot"></span> &#x1F399; وضع الاجتماع';
+        });
+
+        await window.apex.startMeeting();
+    }
+}
+
+// ─── Task Queue System ───
+// يقدر المستخدم يضيف أوامر جديدة وهو شغال — تتنفذ بالترتيب
+let taskQueue = [];
+let isProcessingQueue = false;
+
+function addToQueue(message) {
+    taskQueue.push(message);
+    renderTaskQueue();
+    if (!isProcessingQueue) {
+        processNextTask();
+    }
+}
+
+async function processNextTask() {
+    if (taskQueue.length === 0) {
+        isProcessingQueue = false;
+        renderTaskQueue();
+        return;
+    }
+
+    isProcessingQueue = true;
+    const task = taskQueue.shift();
+    renderTaskQueue();
+
+    // Send as normal message
+    chatInput.value = task;
+    await sendMessage();
+
+    // Wait for streaming to finish
+    const waitForDone = () => new Promise(resolve => {
+        const check = setInterval(() => {
+            if (!isStreaming) { clearInterval(check); resolve(); }
+        }, 300);
+    });
+    await waitForDone();
+
+    // Process next
+    setTimeout(() => processNextTask(), 500);
+}
+
+function renderTaskQueue() {
+    let queueEl = document.getElementById('task-queue-panel');
+    if (taskQueue.length === 0 && !isProcessingQueue) {
+        if (queueEl) queueEl.style.display = 'none';
+        return;
+    }
+
+    if (!queueEl) {
+        queueEl = document.createElement('div');
+        queueEl.id = 'task-queue-panel';
+        queueEl.style.cssText = `
+            position:fixed;bottom:90px;left:20px;
+            background:var(--bg-secondary);border:1px solid var(--border);
+            border-radius:12px;padding:12px 16px;min-width:220px;max-width:350px;
+            z-index:1000;font-size:12px;box-shadow:0 4px 20px rgba(0,0,0,0.4);
+        `;
+        document.body.appendChild(queueEl);
+    }
+
+    queueEl.style.display = 'block';
+    let html = '<div style="color:var(--accent);font-weight:600;margin-bottom:8px;font-size:13px;">قائمة المهام</div>';
+
+    if (isProcessingQueue) {
+        html += `<div style="display:flex;align-items:center;gap:6px;color:var(--success);margin-bottom:4px;">
+            <span style="animation:pulse 1s infinite;">&#x25CF;</span> جاري التنفيذ...
+        </div>`;
+    }
+
+    taskQueue.forEach((task, i) => {
+        html += `<div style="display:flex;align-items:center;gap:6px;color:var(--text-secondary);padding:3px 0;">
+            <span style="color:var(--text-muted);">${i + 1}.</span>
+            <span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${escapeHtml(task)}</span>
+            <span onclick="taskQueue.splice(${i},1);renderTaskQueue();" style="cursor:pointer;color:var(--error);margin-right:auto;">&times;</span>
+        </div>`;
+    });
+
+    queueEl.innerHTML = html;
+}
+
+// Override sendMessage to support queue — user can type while AI is working
+const originalSendHandler = chatInput.onkeydown;
+chatInput.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' && !e.shiftKey && isStreaming) {
+        e.preventDefault();
+        const msg = chatInput.value.trim();
+        if (msg) {
+            addToQueue(msg);
+            chatInput.value = '';
+            chatInput.style.height = '24px';
+        }
+    }
+});
+
+// ─── Listen for tab switch from main process ───
+if (window.apex && window.apex.onStreamChunk) {
+    // Already set up in sendMessage
 }
 
 // ─── Init ───
