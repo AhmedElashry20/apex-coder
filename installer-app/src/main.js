@@ -4,7 +4,7 @@ const { exec } = require('child_process');
 
 let mainWindow;
 
-const elashry ai_CORE_PATH = path.resolve(__dirname, '..', '..', 'apex-core');
+const ELASHRY_CORE_PATH = path.resolve(__dirname, '..', '..', 'apex-core');
 const ENV_PATH = '/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin';
 
 function createWindow() {
@@ -209,13 +209,13 @@ ipcMain.handle('start-install', async () => {
     // Step 12: Install Python packages
     await executeStep(11, async () => {
         mainWindow.webContents.send('install-log', 'Installing Python packages...\n');
-        await runCommand(`cd "${elashry ai_CORE_PATH}" && python3.11 -m pip install -r requirements.txt`, { timeout: 600000 });
+        await runCommand(`cd "${ELASHRY_CORE_PATH}" && python3.11 -m pip install -r requirements.txt`, { timeout: 600000 });
     });
 
     // Step 13: Install npm packages
     await executeStep(12, async () => {
         mainWindow.webContents.send('install-log', 'Installing npm packages...\n');
-        await runCommand(`cd "${elashry ai_CORE_PATH}" && npm install`, { timeout: 300000 });
+        await runCommand(`cd "${ELASHRY_CORE_PATH}" && npm install`, { timeout: 300000 });
     });
 
     // Step 14: Download Whisper model
@@ -227,13 +227,13 @@ ipcMain.handle('start-install', async () => {
     // Step 15: Build elashry ai.app
     await executeStep(14, async () => {
         mainWindow.webContents.send('install-log', 'Building elashry ai.app...\n');
-        await runCommand(`cd "${elashry ai_CORE_PATH}" && CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --x64`, { timeout: 600000 });
+        await runCommand(`cd "${ELASHRY_CORE_PATH}" && CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac --x64`, { timeout: 600000 });
     });
 
     // Step 16: Copy to Applications
     await executeStep(15, async () => {
         mainWindow.webContents.send('install-log', 'Copying elashry ai.app to Applications...\n');
-        await runCommand(`cp -R "${elashry ai_CORE_PATH}/dist/mac/elashry ai.app" /Applications/`);
+        await runCommand(`cp -R "${ELASHRY_CORE_PATH}/dist/mac/elashry ai.app" /Applications/`);
     });
 
     // Step 17: Finalize
