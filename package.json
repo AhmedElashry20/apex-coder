@@ -1,0 +1,25 @@
+{
+  "name": "apex-coder",
+  "version": "1.0.0",
+  "description": "APEX — Full Local AI Agent for Mac with Voice Cloning & Meeting Mode",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev"
+  },
+  "author": "ElAshry AI",
+  "license": "MIT",
+  "dependencies": {
+    "electron": "^31.0.0",
+    "better-sqlite3": "^11.0.0",
+    "chromadb": "^1.8.1",
+    "cheerio": "^1.0.0",
+    "marked": "^12.0.0",
+    "highlight.js": "^11.9.0",
+    "playwright": "^1.44.0",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "electron-builder": "^24.13.0"
+  }
+}
